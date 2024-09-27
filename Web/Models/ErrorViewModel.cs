@@ -1,4 +1,4 @@
-namespace surfs_up2._0.Models;
+namespace Web.Models;
 
 public class ErrorViewModel
 {

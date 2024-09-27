@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-surfs_up2._0-b5acd41e-560f-4f8e-950d-a4cb200bf646</UserSecretsId>
-    <RootNamespace>surfs_up2._0</RootNamespace>
+    <RootNamespace>Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

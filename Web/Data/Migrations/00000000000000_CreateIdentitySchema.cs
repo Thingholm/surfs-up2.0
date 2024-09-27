@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace surfs_up2._0.Data.Migrations
+namespace Web.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

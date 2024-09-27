@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using surfs_up2._0.Data;
+using Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

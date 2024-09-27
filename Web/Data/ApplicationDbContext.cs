@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace surfs_up2._0.Data;
+namespace Web.Data;
 
 public class ApplicationDbContext : IdentityDbContext
 {

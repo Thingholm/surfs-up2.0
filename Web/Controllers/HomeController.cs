@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using surfs_up2._0.Models;
+using Web.Models;
 
-namespace surfs_up2._0.Controllers;
+namespace Web.Controllers;
 
 public class HomeController : Controller
 {
