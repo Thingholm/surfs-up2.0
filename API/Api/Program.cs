@@ -1,4 +1,7 @@
 
+using Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Api
 {
     public class Program
@@ -14,7 +17,24 @@ namespace Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            string? connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+            builder.Services.AddDbContext<ProductsDbContext>(options => options.UseSqlite(connectionString));
+
             var app = builder.Build();
+
+            using (IServiceScope scope = app.Services.CreateScope())
+            {
+                try
+                {
+                    ProductsDbContext db = scope.ServiceProvider.GetRequiredService<ProductsDbContext>();
+                    DataSeeder.SeedData(db);
+                }
+                catch (Exception ex)
+                {
+                    ILogger<Program> logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Error seeding database");
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

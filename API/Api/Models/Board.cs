@@ -9,7 +9,8 @@ public class Board
     public double Thickness { get; set; }
     public double Volume { get; set; }
     public double Price { get; set; }
-    public int ProductTypeId { get; set; }
-    public BoardType? BoardType { get; set; }
+    public BoardType BoardType { get; set; }
     public string ImageUrl { get; set; } = null!;
+
+    public ICollection<BoardEquipment> BoardEquipment { get; set; }
 }
