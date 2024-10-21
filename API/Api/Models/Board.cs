@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace Api.Models;
 
 public class Board
