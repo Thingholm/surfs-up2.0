@@ -1,0 +1,41 @@
+@model IEnumerable<Web.Models.Board>
+
+@{
+    ViewData["Title"] = "Surfboards";
+}
+
+<h1>Surfboards</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Length (cm)</th>
+            <th>Width (cm)</th>
+            <th>Thickness (cm)</th>
+            <th>Volume (L)</th>
+            <th>Price ($)</th>
+            <th>Board Type</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var board in Model)
+        {
+            <tr>
+                <td>@board.Name</td>
+                <td>@board.Length</td>
+                <td>@board.Width</td>
+                <td>@board.Thickness</td>
+                <td>@board.Volume</td>
+                <td>@board.Price.ToString("F2")</td>
+                <td>@board.BoardType</td>
+                <td>
+                    <img src="@board.ImageUrl" alt="@board.Name" style="max-width: 100px;"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+}

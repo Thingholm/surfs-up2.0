@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Api.Models;
+namespace Web.Models;
 
 public class BoardEquipment
 {

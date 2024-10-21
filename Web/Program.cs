@@ -1,7 +1,9 @@
 using Web.Data;
 using Web.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;;
+using Microsoft.EntityFrameworkCore;
+using Web.Repositories;
+;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ var connectionstring = builder.Configuration.GetConnectionString("UserDatabase")
 
 
 // Add services to the container.
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSqlite<AppDbContext>(connectionstring);
 builder.Services.AddIdentity<User, IdentityRole>(
@@ -22,6 +25,7 @@ builder.Services.AddIdentity<User, IdentityRole>(
         options.Password.RequireLowercase = false;
     }
 ).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<CartItemRepository>();
 
 var app = builder.Build();
 
@@ -38,8 +42,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapDefaultControllerRoute();
+});
 
 app.MapControllerRoute(
     name: "default",
