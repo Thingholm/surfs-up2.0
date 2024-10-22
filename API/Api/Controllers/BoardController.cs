@@ -11,11 +11,13 @@ public class BoardController : ControllerBase
 {
     private readonly ILogger<BoardController> _logger;
     private readonly ProductsDbContext _db;
+    private readonly IWebHostEnvironment _env;  // To get the environment for saving files
 
-    public BoardController(ILogger<BoardController> logger, ProductsDbContext db)
+    public BoardController(ILogger<BoardController> logger, ProductsDbContext db, IWebHostEnvironment env)
     {
         _logger = logger;
         _db = db;
+        _env = env;
     }
 
     [HttpGet]
@@ -25,6 +27,8 @@ public class BoardController : ControllerBase
             .Include(e => e.BoardEquipment)
                 .ThenInclude(e => e.Equipment)
             .ToListAsync(); 
+
+        fixBoards(boards);
 
         return Ok(boards);
     }
@@ -39,19 +43,58 @@ public class BoardController : ControllerBase
         
         if (board is null)
             return NotFound();
-
-        return Ok(board);
+        
+        return Ok(fixBoard(board));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Board board)
+    public async Task<IActionResult> Post([FromForm] IFormFile image, [FromForm] string name, [FromForm] double length, [FromForm] double width, [FromForm] double thickness, [FromForm] double volume, [FromForm] double price, [FromForm] int boardTypeId)
     {
+        // Handle board type validation
+        var boardType = await _db.BoardTypes.FindAsync(boardTypeId);
+        if (boardType == null)
+        {
+            return BadRequest("Invalid BoardTypeId.");
+        }
+
+        // Upload the image and save its URL
+        string imageUrl = null;
+        if (image != null && image.Length > 0)
+        {
+            var supportedTypes = new[] { "jpg", "jpeg", "png", "webp" };
+            var extension = Path.GetExtension(image.FileName).Substring(1);
+            if (!supportedTypes.Contains(extension.ToLower()))
+            {
+                return BadRequest("Invalid file type. Only images are allowed.");
+            }
+
+            // Save image to wwwroot/images folder
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+            var filePath = Path.Combine(_env.WebRootPath, "images", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            imageUrl = $"/images/{fileName}";  // Set the image URL
+        }
+
+        // Create the board with the image URL
+        var board = new Board
+        {
+            Name = name,
+            Length = length,
+            Width = width,
+            Thickness = thickness,
+            Volume = volume,
+            Price = price,
+            BoardType = boardType,
+            ImageUrl = imageUrl // Save the image URL
+        };
+
         await _db.Boards.AddAsync(board);
-
-        int rowsAffected = await _db.SaveChangesAsync();
-
-        if (rowsAffected == 0)
-            return BadRequest();
+        await _db.SaveChangesAsync();
 
         return Created(board.Id.ToString(), board);
     }
@@ -89,5 +132,29 @@ public class BoardController : ControllerBase
         await _db.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private Board fixBoard(Board board) {
+        
+        
+        if (board != null) {
+            string url = board.ImageUrl;
+            
+            if (url !=null && !url.StartsWith("/images/")) {
+                url = "/images/" + url;
+                board.ImageUrl = url;
+            }
+        }
+        return board;
+    }
+
+    private List<Board> fixBoards(List<Board> boards) {
+        if (boards != null) {
+
+            foreach (Board board in boards) {
+                fixBoard(board);
+            }
+        }
+        return boards;
     }
 }

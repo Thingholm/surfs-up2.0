@@ -1,4 +1,5 @@
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Api.Models;
 
@@ -13,6 +14,7 @@ public class Board
     public double Price { get; set; }
     public BoardType BoardType { get; set; }
     public string ImageUrl { get; set; } = null!;
+
 
     public ICollection<BoardEquipment> BoardEquipment { get; set; }
 }

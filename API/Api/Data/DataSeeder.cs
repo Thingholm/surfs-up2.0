@@ -48,7 +48,7 @@ public static class DataSeeder
 
         List<Board> boards = new List<Board>()
         {
-            new Board { Name = "The Minilog", Length = 6.0, Width = 21.0, Thickness = 2.75, Volume = 38.8, BoardType = shortboardType, Price = 565.0, ImageUrl = "s326152794241300969_p345_i3_w5000.webp" },
+            new Board { Name = "The Minilog", Length = 6.0, Width = 21.0, Thickness = 2.75, Volume = 38.8, BoardType = shortboardType, Price = 565.0, ImageUrl = "305397306+front+jpg.webp" },
             new Board { Name = "The Wide Glider", Length = 7.1, Width = 21.75, Thickness = 2.75, Volume = 44.16, BoardType = funboardType, Price = 685.0, ImageUrl = "s326152794241300969_p327_i17_w1168.png" },
             new Board { Name = "The Golden Ratio", Length = 6.3, Width = 21.85, Thickness = 2.9, Volume = 43.22, BoardType = funboardType, Price = 695.0, ImageUrl = "s326152794241300969_p327_i17_w1168.png" },
             new Board { Name = "Mahi Mahi", Length = 5.4, Width = 20.75, Thickness = 2.3, Volume = 29.39, BoardType = fishType, Price = 645.0, ImageUrl = "s326152794241300969_p332_i22_w1116.png" },
