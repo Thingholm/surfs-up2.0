@@ -1,0 +1,90 @@
+
+
+@{
+    double total = 0;
+    double vat = 0;
+    if (Model != null)
+    {
+        if (Model.Count > 0)
+        {
+            foreach (CartItem cartItem in Model)
+            {
+                total += cartItem.Board.Price * cartItem.Amount;
+            }
+            vat = total * 0.2;
+        }
+    }
+}
+
+@* @section breadcrumb
+{
+    <nav class="breadcrumb">
+        <a
+            asp-controller="Home"
+            asp-action="Index"
+        >
+            Forside
+        </a>
+        <svg fill="#000000" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M69.8437,43.3876,33.8422,13.3863a6.0035,6.0035,0,0,0-7.6878,9.223l30.47,25.39-30.47,25.39a6.0035,6.0035,0,0,0,7.6878,9.2231L69.8437,52.6106a6.0091,6.0091,0,0,0,0-9.223Z"></path></g></svg>        
+        <a
+            asp-controller="Cart"
+            asp-action="Index"
+        >
+            Kurv
+        </a>
+    </nav>
+} *@
+
+<section class="cart-section">
+    <div class="cart-container">
+        <div class="cart-header">
+            <p class="header">Produkt</p>
+            <p class="header">Antal</p>
+            <p class="header">Pris</p>
+        </div>
+        @if (Model != null)
+        {
+            if (Model.Count > 0)
+            {
+                foreach (CartItem cartItem in Model)
+                {
+                    <div class="cart-item">
+                        <div class="cart-product-container">
+                            <img src=@($"/Images/boards/{cartItem.Board.ImageUrl}") alt=@(cartItem.Board.Name) />
+                            <h4>@cartItem.Board.Name</h4>
+                        </div>
+                        <div class="cart-amount-container">
+                            <div class="amount-container">
+                                <form method="post" asp-controller="Cart" asp-action="DecreaseAmount">
+                                    <input type="hidden" name="id" value=@cartItem.Id>
+                                    <button disabled=@(cartItem.Amount == 1) class="btn text primary" type="submit">-</button>
+                                </form>
+                                <p>@cartItem.Amount</p>
+                                <form method="post" asp-controller="Cart" asp-action="IncreaseAmount">
+                                    <input type="hidden" name="id" value=@cartItem.Id>
+                                    <button class="btn text primary">+</button>
+                                </form>
+                            </div>
+                            <form method="post" asp-controller="Cart" asp-action="DeleteItem">
+                                <input type="hidden" name="Id" value=@cartItem.Id>
+                                <button class="delete-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 11V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14 11V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                </button>
+                            </form>
+                        </div>
+                        <p class="price">€@((cartItem.Board.Price * cartItem.Amount).ToString("N2"))</p> 
+                    </div>
+                }
+            }
+        }
+    </div>
+    <div class="cart-details">
+        <p class="subtotal"><span>Subtotal</span><span>€@((total - vat).ToString("N2"))</span></p>
+        <p class="intermediate"><span>Levering</span><span>+ €@(0.ToString("N2"))</span></p>
+        <p class="intermediate"><span>Moms <span>25%</span></span><span>+ €@vat.ToString("N2")</span></p>
+        <p class="total"><span>Total</span><span>€@total.ToString("N2")</span></p>
+        <button class="btn contained primary">
+            Videre til betaling
+        </button>
+    </div>
+</section>

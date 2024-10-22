@@ -35,19 +35,6 @@ namespace Web.Controllers
             }
             return View("Error");
 
-            // List<ProductType> productTypes = _dbContext.ProductTypes.ToList();
-            // List<Board>? Board;
-            // if (types == null)
-            // {
-            //     Board = _dbContext.Products.ToList();
-            // }
-            // else
-            // {
-            //     List<int> typeList = types.Contains(",") ? types.Split(",").Select(x => int.Parse(x)).ToList() : new List<int>() { 1 };
-            //     Board = _dbContext.Products.Where(p => typeList.Any(pt => pt == p.ProductTypeId)).ToList();
-            // }
-
-
         }
 
 

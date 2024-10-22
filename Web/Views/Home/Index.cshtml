@@ -1,94 +1,123 @@
-﻿<section class="hero flex observe top">
+﻿@* @{
+    string[] selectedTypes = Context.Request.Query["Types"].ToString()?.Split(",") ?? [""];
+    string sortBy = Context.Request.Query["SortBy"].ToString() ?? "popularity";
+} *@
+
+@* @section breadcrumb{
+    <nav class="breadcrumb">
+        <a
+            asp-controller="Home"
+            asp-action="Index"
+        >
+            Forside
+        </a>
+        <svg fill="#000000" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M69.8437,43.3876,33.8422,13.3863a6.0035,6.0035,0,0,0-7.6878,9.223l30.47,25.39-30.47,25.39a6.0035,6.0035,0,0,0,7.6878,9.2231L69.8437,52.6106a6.0091,6.0091,0,0,0,0-9.223Z"></path></g></svg>        
+        <a
+            asp-controller="Products"
+            asp-action="Index"
+        >
+            Produkter
+        </a>
+    </nav>
+} *@
+
+@* <section class="products-section">
+    <div class="filters-container">
+        <p>Filtrér</p>
+        @if (Model.Item2.Count > 0)
+        {
+            foreach(BoardType boardType in Model.Item2)
+            {
+                <div class="input-container">
+                    <label for=@boardType.Id>@boardType.Name</label>
+                    <input 
+                        type="checkbox" 
+                        name=@boardType.Id 
+                        id=@boardType.Id 
+                        @(selectedTypes.Contains(@boardType.Id.ToString()) ? "checked" : "")
+                    >
+                </div>
+            }
+        }
+    </div>
     <div>
-        <h1>Lorem ipsum dolor sit amet consectetur perspiciatis?</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla eos excepturi sit alias soluta repellendus cumque illum odio esse voluptas eaque, placeat tempore in?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti modi consequuntur architecto mollitia ipsum!</p>
-        <div class="btn-container">
-            <button class="btn primary contained">Book</button>
-            <button class="btn primary text">Lokationer</button>
+        <div class="sort-container">
+            <div>
+                <label for="sort">Sortér efter: </label>
+                <select name="sort" id="sort" onchange="updateSortQueryParam()">
+                    <!option value="popularity" @(sortBy == "popularity" ? "selected" : "")>Popularitet</!option>
+                    <!option value="price-asc" @(sortBy == "price-asc" ? "selected" : "")>Pris (Stigende)</!option>
+                    <!option value="price-desc" @(sortBy == "price-desc" ? "selected" : "")>Pris (Faldende)</!option>
+                </select>
+            </div>
+            
         </div>
-    </div>
-    <div>
-        <img src="images/surfboards.jpg" alt="surfboards">
-    </div>
-</section>
-@* <h2>Produkter</h2>
-<section class="flex-container observe">
-    <div>
-        <div>
-            <h2>Pakketilbud 1</h2>
-            <img src="~/Images/surfboard1.png" alt="Surfbræt">
-            <h3>899,-</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus sed quas modi iste neque ut ipsum eum quam optio perspiciatis!</p>
-            <button class="btn primary contained">
-                Book nu
-            </button>
-        </div>
-    </div>
-    <div>
-        <div>
-            <h2>Pakketilbud 2</h2>
-            <img src="~/Images/surfboard2.png" alt="Surfbræt">
-            <h3>799,-</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus optio praesentium nisi tempore eos?</p>
-            <button class="btn primary contained">
-                Book nu
-            </button>
-        </div>
-    </div>
-    <div>
-        <div>
-            <h2>Pakketilbud 3</h2>
-            <img src="~/Images/surfboard3.png" alt="Surfbræt">
-            <h3>699,-</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione culpa ab ex alias necessitatibus adipisci beatae quidem vitae.</p>
-            <button class="btn primary contained">
-                Book Nu
-            </button>
-        </div>
-    </div>
-    <div>
-        <div>
-            <h2>Pakketilbud 4</h2>
-            <img src="~/Images/surfboard4.png" alt="Surfbræt">
-            <h3>599,-</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam rem doloribus nisi molestias ex, temporibus soluta nulla ea! Dolorum, eaque!</p>
-            <button class="btn primary contained">
-                Book nu
-            </button>
+        <div class="products-grid-container">
+            @if (Model.Item1.Count > 0)
+            {
+                foreach(Board board in Model.Item1)
+                {
+                    <a 
+                        class="product-container"
+                        asp-controller="Board"
+                        asp-action="Board"
+                        asp-route-id=@(board.Id)
+                    >
+                        <div class="img-container">
+                            <img src=@($"/Images/board/{board.ImageUrl}") alt=@(board.Name) />
+                        </div>
+                        <p class="type">@board.BoardType.Name</p>
+                        <h4>@board.Name</h4>
+                        <p class="price">@($"€{board.Price.ToString("N2")}")</p>
+                        <button class="btn text primary">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                            Føj til kurv
+                        </button>
+                    </a>
+                }
+            }
         </div>
     </div>
 </section> *@
-<h2>Om Surf's Up</h2>
-<section class="flex observe">
-    <div>
-        <h3>Lorem ipsum dolor sit amet consectetur perspiciatis?</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla eos excepturi sit alias soluta repellendus cumque illum odio esse voluptas eaque, placeat tempore in?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti modi consequuntur architecto mollitia ipsum!</p>
-    </div>
-    <div>
-        <img src="images/om-os.jpg" alt="Om-os billede">
-    </div>
-</section>
-<section class="flex observe">
-    <div>
-        <img src="images/om-os2.jpg" alt="Om-os billede">
-    </div>
-    <div>
-        <h3>Lorem ipsum dolor sit amet consectetur perspiciatis?</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla eos excepturi sit alias soluta repellendus cumque illum odio esse voluptas eaque, placeat tempore in?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti modi consequuntur architecto mollitia ipsum!</p>
-    </div>
-</section>
-@* <h2>Lokationer</h2>
-<section class="map observe">
-    <iframe class="map"
-            width="1920"
-            height="700"
-            style="border:0"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA_FhSkJ7Mn5J5U945tzP8gnIhkHHDlfwk&q=surf+danmark">
-    </iframe>
-</section> *@
+
+@model IEnumerable<Web.Models.Board>
+
+@{
+    ViewData["Title"] = "Surfboards";
+}
+
+<h1>Surfboards</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Length (cm)</th>
+            <th>Width (cm)</th>
+            <th>Thickness (cm)</th>
+            <th>Volume (L)</th>
+            <th>Price ($)</th>
+            <th>Board Type</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var board in Model)
+        {
+            <tr>
+                <td>@board.Name</td>
+                <td>@board.Length</td>
+                <td>@board.Width</td>
+                <td>@board.Thickness</td>
+                <td>@board.Volume</td>
+                <td>@board.Price.ToString("F2")</td>
+                <td>@board.BoardType</td>
+                <td>
+                    <img src="@board.ImageUrl" alt="@board.Name" style="max-width: 100px;"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+}
