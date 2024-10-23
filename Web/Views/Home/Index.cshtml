@@ -1,123 +1,38 @@
-﻿@* @{
-    string[] selectedTypes = Context.Request.Query["Types"].ToString()?.Split(",") ?? [""];
-    string sortBy = Context.Request.Query["SortBy"].ToString() ?? "popularity";
-} *@
-
-@* @section breadcrumb{
-    <nav class="breadcrumb">
-        <a
-            asp-controller="Home"
-            asp-action="Index"
-        >
-            Forside
-        </a>
-        <svg fill="#000000" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title></title><path d="M69.8437,43.3876,33.8422,13.3863a6.0035,6.0035,0,0,0-7.6878,9.223l30.47,25.39-30.47,25.39a6.0035,6.0035,0,0,0,7.6878,9.2231L69.8437,52.6106a6.0091,6.0091,0,0,0,0-9.223Z"></path></g></svg>        
-        <a
-            asp-controller="Products"
-            asp-action="Index"
-        >
-            Produkter
-        </a>
-    </nav>
-} *@
-
-@* <section class="products-section">
-    <div class="filters-container">
-        <p>Filtrér</p>
-        @if (Model.Item2.Count > 0)
-        {
-            foreach(BoardType boardType in Model.Item2)
-            {
-                <div class="input-container">
-                    <label for=@boardType.Id>@boardType.Name</label>
-                    <input 
-                        type="checkbox" 
-                        name=@boardType.Id 
-                        id=@boardType.Id 
-                        @(selectedTypes.Contains(@boardType.Id.ToString()) ? "checked" : "")
-                    >
-                </div>
-            }
-        }
-    </div>
-    <div>
-        <div class="sort-container">
-            <div>
-                <label for="sort">Sortér efter: </label>
-                <select name="sort" id="sort" onchange="updateSortQueryParam()">
-                    <!option value="popularity" @(sortBy == "popularity" ? "selected" : "")>Popularitet</!option>
-                    <!option value="price-asc" @(sortBy == "price-asc" ? "selected" : "")>Pris (Stigende)</!option>
-                    <!option value="price-desc" @(sortBy == "price-desc" ? "selected" : "")>Pris (Faldende)</!option>
-                </select>
-            </div>
-            
-        </div>
-        <div class="products-grid-container">
-            @if (Model.Item1.Count > 0)
-            {
-                foreach(Board board in Model.Item1)
-                {
-                    <a 
-                        class="product-container"
-                        asp-controller="Board"
-                        asp-action="Board"
-                        asp-route-id=@(board.Id)
-                    >
-                        <div class="img-container">
-                            <img src=@($"/Images/board/{board.ImageUrl}") alt=@(board.Name) />
-                        </div>
-                        <p class="type">@board.BoardType.Name</p>
-                        <h4>@board.Name</h4>
-                        <p class="price">@($"€{board.Price.ToString("N2")}")</p>
-                        <button class="btn text primary">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                            Føj til kurv
+﻿<h1>Produkter</h1>
+<div class="container">
+    @foreach (var board in Model)
+    {
+        <div class="column">
+            <div class="card">
+                <img src="@board.ImageUrl" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@board.Name</h5>
+                    <p class="card-text"><strong>Længde:</strong> @board.Length feet</p>
+                    <p class="card-text"><strong>Bredde:</strong> @board.Width inches</p>
+                    <p class="card-text"><strong>Tykkelse:</strong> @board.Thickness inches</p>
+                    <p class="card-text"><strong>Volume:</strong> @board.Volume liter</p>
+                    <p class="card-text"><strong>Pris:</strong> @board.Price.ToString()€</p>
+                    <p class="card-text"><strong>Type:</strong> @board.BoardType</p>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Vælg antal
                         </button>
-                    </a>
-                }
-            }
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">1</a></li>
+                            <li><a class="dropdown-item" href="#">2</a></li>
+                            <li><a class="dropdown-item" href="#">3</a></li>
+                            <li><a class="dropdown-item" href="#">4</a></li>
+                            <li><a class="dropdown-item" href="#">5</a></li>
+                        </ul>
+                         <a href="#" class="btn btn-primary">Tilføj til kurv</a>
+                    </div>
+                   
+                </div>
+            </div>
         </div>
-    </div>
-</section> *@
+    }
+</div>
 
-@model IEnumerable<Web.Models.Board>
 
-@{
-    ViewData["Title"] = "Surfboards";
-}
 
-<h1>Surfboards</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Length (cm)</th>
-            <th>Width (cm)</th>
-            <th>Thickness (cm)</th>
-            <th>Volume (L)</th>
-            <th>Price ($)</th>
-            <th>Board Type</th>
-            <th>Image</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var board in Model)
-        {
-            <tr>
-                <td>@board.Name</td>
-                <td>@board.Length</td>
-                <td>@board.Width</td>
-                <td>@board.Thickness</td>
-                <td>@board.Volume</td>
-                <td>@board.Price.ToString("F2")</td>
-                <td>@board.BoardType</td>
-                <td>
-                    <img src="@board.ImageUrl" alt="@board.Name" style="max-width: 100px;"/>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-}

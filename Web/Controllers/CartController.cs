@@ -18,7 +18,7 @@ namespace Web.Controllers
             List<CartItem> cartItems = _cartItemRepository.GetAllCartItems();
             return View(cartItems);
         }
-        
+
         [HttpPost]
         [Route("delete-item")]
         public IActionResult DeleteItem(int id)
@@ -48,5 +48,8 @@ namespace Web.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        
+
     }
 }
